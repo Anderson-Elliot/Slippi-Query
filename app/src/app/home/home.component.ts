@@ -130,7 +130,7 @@ export class HomeComponent implements OnInit {
     this.count = 0;
     ipcRenderer.on('get-latest-frame-reply', this.setWinningPlayer);
 
-    if  (this.currentlyLoadingSlippiRows.length > 0) {
+    if (this.currentlyLoadingSlippiRows.length > 0) {
       ipcRenderer.send('get-latest-frame', { index: 0, fileName: this.currentlyLoadingSlippiRows[0].fileName })
     };
   }
@@ -143,10 +143,12 @@ export class HomeComponent implements OnInit {
       });
     }
     this.count += 1;
-    if (this.count > this.currentlyLoadingSlippiRows.length) {
+    if (this.count >= this.currentlyLoadingSlippiRows.length) {
       ipcRenderer.removeListener('get-latest-frame-reply', this.setWinningPlayer);
     } else {
-      ipcRenderer.send('get-latest-frame', { index: this.count, fileName: this.currentlyLoadingSlippiRows[this.count].fileName })
+      if (this.currentlyLoadingSlippiRows && this.currentlyLoadingSlippiRows[this.count].fileName) {
+        ipcRenderer.send('get-latest-frame', { index: this.count, fileName: this.currentlyLoadingSlippiRows[this.count].fileName })
+      }
     }
   };
 
