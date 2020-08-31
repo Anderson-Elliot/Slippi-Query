@@ -1,10 +1,10 @@
 <div class="container">
-  <img src="assets/slippi-logo.png" class="slippi-main-logo" (click)="slippiService.isLoading = !slippiService.isLoading" style="height: 100px; width: 100px;">
-
   <div class="loader" [hidden]="!isLoading"></div>
 
   <div class="table-container" [ngClass]="{ 'display-none' : isLoading }">
     <div class="filter-section date-picker">
+      <img src="assets/slippi-logo.png" class="slippi-main-logo">
+
       <div class="filter">
         <div class="filter-header">
           {{ 'Date' }}
