@@ -21,7 +21,12 @@
           {{ 'Players' }}
         </div>
         <mat-form-field>
-          <input matInput #players type="text" [(ngModel)]="filters.players">
+          <input matInput #players type="text" [(ngModel)]="filters.players" [matAutocomplete]="playerAuto">
+          <mat-autocomplete autoActiveFirstOption #playerAuto="matAutocomplete" (optionSelected)="onPlayerSelected($event)">
+            <mat-option *ngFor="let option of allPlayerNames" [value]="option">
+              {{option}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </div>
 

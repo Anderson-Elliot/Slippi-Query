@@ -33,7 +33,8 @@ export class HomeComponent implements OnInit {
   data: SlippiRow[] = [];
   dataSource: MatTableDataSource<SlippiRow>;
   activeDates: number[];
-  displayedColumns= ["startAt", "playerOneName", "playerTwoName"];
+  displayedColumns= ['startAt', 'playerOneName', 'playerTwoName'];
+  allPlayerNames = ['elliot', 'ben', 'alex'];
 
   // properties for loading winning player.
   currentlyLoadingSlippiRows: SlippiRow[];
@@ -52,6 +53,7 @@ export class HomeComponent implements OnInit {
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
 
+          this.getAllPlayerNames();
           this.getActiveDates();
           this.isLoading = false;
           setTimeout(_ => {
@@ -72,7 +74,7 @@ export class HomeComponent implements OnInit {
   applyFilter() {
     const filter = this.filters;
     const startAt = (e: SlippiRow) => filter.startAt == null || moment(e.startAt).startOf('day').diff(moment(filter.startAt).startOf('day'), 'days') === 0;
-    const players = (e: SlippiRow) => !filter.players || `${e.playerOneName}`.toLowerCase().includes(filter.players.toLowerCase()) || `${e.playerTwoName}`.toLowerCase().includes(filter.players.toLowerCase());
+    const players = (e: SlippiRow) => !filter.players || `${e.playerOneName}`.toLowerCase().includes(filter.players.trim().toLowerCase()) || `${e.playerTwoName}`.toLowerCase().includes(filter.players.trim().toLowerCase());
     const filters = R.allPass([startAt, players])
 
     this.dataSource.data = this.data.filter(d => filters(d));
@@ -92,6 +94,12 @@ export class HomeComponent implements OnInit {
         }
       });
     }, 50);
+  }
+
+  onPlayerSelected(event: any) {
+    console.log(event);
+    console.log(this.filters);
+    this.applyFilter();
   }
 
   private sortMetadata(a: SlippiRaw, b: SlippiRaw): number {
@@ -179,7 +187,22 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  private getAllPlayerNames() {
+    if (this.dataSource.data) {
+      this.allPlayerNames =
+        this.dataSource.data.map(d => d.playerOneName)
+          .concat(this.dataSource.data.map(d => d.playerTwoName))
+          .filter(this.distinctStrings)
+          .filter(s => s !== '')
+          .sort();
+    }
+  }
+
   private distinctDates(dateValue: number, index: number, self: number[]) {
     return self.findIndex(d => d === dateValue) === index;
+  }
+
+  private distinctStrings(stringValue: string, index: number, self: string[]) {
+    return self.findIndex(d => d === stringValue) === index;
   }
 }
